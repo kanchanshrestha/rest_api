@@ -7,5 +7,5 @@ class Customer(models.Model):
     name=models.CharField(max_length=25,null=True,blank=True)
     address=models.CharField(max_length=25,null=True,blank=True)
     email=models.EmailField(null=True,blank=True)
-class Meta:
+    class Meta:
         db_table="Customer"

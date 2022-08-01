@@ -7,14 +7,19 @@ from customer.models import Customer
 #     email=serializers.EmailField()
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    
+class CustomerDetailSerializer(serializers.ModelSerializer):
+    username=serializers.CharField(max_length=25,required=True,trim_whitespace=True)
+    name=serializers.CharField(max_length=25,required=True,trim_whitespace=True)
+    address=serializers.CharField(max_length=25,required=True,trim_whitespace=True)
+    email=serializers.EmailField(required=True,trim_whitespace=True)
+
     class Meta:
         model=Customer
         fields='__all__'
 
-    # def to_representation(self, instance):
-    #     return{
-    #         "id":instance.id,
-    #         "name":instance.name
-    #     }
+class CustomerListSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        return{
+            "id":instance.id,
+            "name":instance.name
+        }
