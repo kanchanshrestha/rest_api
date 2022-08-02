@@ -58,38 +58,10 @@ class Customer_List(generics.GenericAPIView):
             "data":serializer.data
         })
 
-class DeleteCustomer(generics.GenericAPIView):
-    queryset = Customer.objects.all()
-    serializer_class=CustomerDetailSerializer
-    model=Customer
-
-    @api_view(['GET'])
-    def delete_customer(request):
-        customers=Customer.objects.filter(id=17)
-        # customers=Customer.objects.filter(id=4) 
-        customers.delete()
-        return Response({
-            "status":True,
-            "message":"data delete"
-        })
-class UpdateCustomer(generics.GenericAPIView):
-    queryset= Customer.objects.all()
-    serializer_class=CustomerDetailSerializer
-    model=Customer
-
-    @api_view(['GET'])
-    def update_customer(request):
-        customers=Customer.objects.filter(id=14).update(address="North America,USA",email="taylor123@gmail.com")
-        return Response({
-            "status":True,
-            "message":"Customer Updated Sucessfully"
-        })
-
 
 class CreateCustomer(generics.GenericAPIView):
     queryset=Customer.objects.all()
     serializer_class=CustomerDetailSerializer
-
     model=Customer
     
     @api_view(['POST'])
@@ -99,14 +71,79 @@ class CreateCustomer(generics.GenericAPIView):
             create_serializer.save()
             return Response({
                 "status":True,
+                "data":create_serializer.data,
                 "message":"Customer Created Sucessfully"
-            })
+            },201)
         else:
             return Response({
                 "error":create_serializer.errors ,
                 
                 },422)
 
+class UpdateCustomer(generics.GenericAPIView):
+    queryset=Customer.objects.all()
+    serializer_class=CustomerDetailSerializer
+    model=Customer
+    
+    @api_view(['PATCH'])
+    def update_customer(request):
+        customer=Customer.objects.get(id=14)
+        update_serializer=CustomerDetailSerializer(data=request.data,instance=customer)
+        # update_serializer=Customer.objects.filter(id=14).update(username=request.data.get["username"] )
+        if update_serializer.is_valid():
+            update_serializer.save()
+            return Response({
+                "status":True,
+                "message":"Customer Detail Updated Sucessfully"
+            })
+        else:
+            return Response({
+                "error":update_serializer.errors ,
+                
+                },422)
+
+
+# #MANUAL WAY
+# class CreateCustomer(generics.GenericAPIView):
+#     queryset=Customer.objects.all()
+#     serializer_class=CustomerDetailSerializer
+#     model=Customer
+#     @api_view(['POST'])
+#     def create_customer(request):
+#         print(request.data)
+#         customers=Customer.objects.create(username="karan2",name="Karan Shrestha",address="Kathmandu",email="karan@test.com")
+#         return Response({
+#             "status":True,
+#             "message":"Customer Created Sucessfully"
+#         })
+
+# class UpdateCustomer(generics.GenericAPIView):
+#     queryset= Customer.objects.all()
+#     serializer_class=CustomerDetailSerializer
+#     model=Customer
+
+#     @api_view(['GET'])
+#     def update_customer(request):
+#         customers=Customer.objects.filter(id=14).update(address="North America,USA",email="taylor123@gmail.com")
+#         return Response({
+#             "status":True,
+#             "message":"Customer Updated Sucessfully"
+#         })
+
+class DeleteCustomer(generics.GenericAPIView):
+    queryset = Customer.objects.all()
+    serializer_class=CustomerDetailSerializer
+    model=Customer
+
+    @api_view(['GET','DELETE'])
+    def delete_customer(request):
+        customers=Customer.objects.filter(id=21)
+        # customers=Customer.objects.filter(id=4) 
+        customers.delete()
+        return Response({
+            "status":True,
+            "message":"Customer deleted Sucessfully"
+        })
 
 # API VIEW
 # class DeleteCustomer(APIView):
@@ -120,15 +157,6 @@ class CreateCustomer(generics.GenericAPIView):
 #             "status":204
 #         })
 
-    # def post(self,request):
-    #     customers=self.get_queryset()
-    #     serializer=self.get_serializer(customers)
-    #     return Response({
-
-
-    #         })
-
-
 
 
 # # Mixin Example but should not be used 
@@ -138,8 +166,6 @@ class CreateCustomer(generics.GenericAPIView):
 #     def post(self, request):
 #         return self.create(request)
     
-  
-
 # class MyView(mixins.UpdateModelMixin):
 #     pass
 # class MyView(mixins.RetrieveModelMixin):
